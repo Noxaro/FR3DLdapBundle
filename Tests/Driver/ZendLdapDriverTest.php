@@ -3,25 +3,22 @@
 namespace FR3D\LdapBundle\Tests\Driver;
 
 use FR3D\LdapBundle\Driver\ZendLdapDriver;
-use FR3D\LdapBundle\Model\LdapUser;
 use FR3D\Psr3MessagesAssertions\PhpUnit\TestLogger;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Zend\Ldap\Exception\LdapException as ZendLdapException;
 use Zend\Ldap\Ldap;
 
 /**
  * Test class for ZendLdapDriver.
  */
-class ZendLdapDriverTest extends AbstractLdapDriverTest
+class ZendLdapDriverTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Zend\Ldap\Ldap
-     */
-    protected $zend;
+    use LdapDriverInterfaceTestTrait;
 
     /**
-     * @var ZendLdapDriver
+     * @var \Zend\Ldap\Ldap|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $zendLdapDriver;
+    protected $zend;
 
     /**
      * Sets up the fixture, for example, opens a network Driver.
@@ -29,10 +26,12 @@ class ZendLdapDriverTest extends AbstractLdapDriverTest
      */
     protected function setUp()
     {
-        parent::setUp();
+        if (!function_exists('ldap_connect')) {
+            $this->markTestSkipped('PHP LDAP extension not loaded');
+        }
 
-        $this->zend = new Ldap($this->getOptions());
-        $this->zendLdapDriver = new ZendLdapDriver($this->zend, new TestLogger());
+        $this->zend = $this->getMock('Zend\Ldap\Ldap');
+        $this->driver = new ZendLdapDriver($this->zend, new TestLogger());
     }
 
     public function testSearch()
@@ -50,72 +49,43 @@ class ZendLdapDriverTest extends AbstractLdapDriverTest
             $entry,
         ];
 
-        $this->zend = $this->getMockBuilder('Zend\Ldap\Ldap')
-                ->getMock();
-        $this->zendLdapDriver = new ZendLdapDriver($this->zend);
         $this->zend->expects($this->once())
                 ->method('searchEntries')
                 ->with($this->equalTo($filter), $this->equalTo($baseDn), $this->equalTo(Ldap::SEARCH_SCOPE_SUB), $this->equalTo($attributes))
                 ->will($this->returnValue([$entry]));
 
-        self::assertEquals($expect, $this->zendLdapDriver->search($baseDn, $filter, $attributes));
+        self::assertEquals($expect, $this->driver->search($baseDn, $filter, $attributes));
     }
 
-    // Bind (bindRequireDn=false)
     /**
-     * @dataProvider provideTestBind
+     * @dataProvider validUserPasswordProvider
      *
-     * @param string $bind_rdn
+     * @param UserInterface $user
      * @param string $password
-     * @param bool $expect
+     * @param string $expectedBindRdn
      */
-    public function testBind($bind_rdn, $password, $expect)
+    public function testBindSuccessful(UserInterface $user, $password, $expectedBindRdn)
     {
-        global $ldapServer;
+        $this->zend->expects($this->once())
+                ->method('bind')
+                ->with($this->equalTo($expectedBindRdn), $this->equalTo($password))
+                ->will($this->returnValue($this->zend));
 
-        $user = new LdapUser();
-        $user->setUsername($bind_rdn);
-
-        $ldapServer->expects($this->once())
-                ->method('ldap_bind')
-                ->with($this->equalTo($bind_rdn), $this->equalTo($password))
-                ->will($this->returnValue($expect));
-
-        self::assertEquals($expect, $this->zendLdapDriver->bind($user, $password));
+        self::assertTrue($this->driver->bind($user, $password));
     }
 
-    public function provideTestBind()
+    /**
+     * @dataProvider invalidUserPasswordProvider
+     *
+     * @param UserInterface $user
+     * @param string $password
+     */
+    public function testFailBindByDn(UserInterface $user, $password)
     {
-        return [
-            // Username
-            ['test_username', 'password', true],
-            ['bad_username', 'password', false],
-            ['test_username', 'bad_password', false],
-            // DN
-            ['uid=test_username,ou=example,dc=com', 'password', true],
-            ['uid=bad_username,ou=example,dc=com', 'password', false],
-            ['uid=test_username,ou=example,dc=com', 'bad_password', false],
-        ];
-    }
+        $this->zend->expects($this->once())
+                ->method('bind')
+                ->will($this->throwException(new ZendLdapException($this->zend)));
 
-    public function testBindUserInterfaceByUsernameSuccessful()
-    {
-        global $ldapServer;
-
-        $username = 'username';
-        $password = 'password';
-        /** @var UserInterface|\PHPUnit_Framework_MockObject_MockObject $user */
-        $user = $this->getMock('Symfony\Component\Security\Core\User\UserInterface');
-
-        $user->expects($this->once())
-                ->method('getUsername')
-                ->will($this->returnValue($username));
-
-        $ldapServer->expects($this->once())
-                ->method('ldap_bind')
-                ->with($this->equalTo($username), $this->equalTo($password))
-                ->will($this->returnValue(true));
-
-        self::assertTrue($this->zendLdapDriver->bind($user, $password));
+        self::assertFalse($this->driver->bind($user, $password));
     }
 }

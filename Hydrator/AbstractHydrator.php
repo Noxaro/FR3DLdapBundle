@@ -3,7 +3,6 @@
 namespace FR3D\LdapBundle\Hydrator;
 
 use FR3D\LdapBundle\Model\LdapUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Provide a hydrator template for easy implementation.
@@ -23,29 +22,23 @@ abstract class AbstractHydrator implements HydratorInterface
     }
 
     /**
-     * Populate an user with the data retrieved from LDAP.
-     *
-     * @param array $ldapUserAttributes
-     *
-     * @return UserInterface
+     * {@inheritDoc}
      */
-    public function hydrate(array $ldapUserAttributes)
+    public function hydrate(array $ldapEntry)
     {
         $user = $this->createUser();
 
-        $this->hydrateUserWithAttributesMap($user, $ldapUserAttributes, $this->attributeMap);
+        $this->hydrateUserWithAttributesMap($user, $ldapEntry, $this->attributeMap);
 
         if ($user instanceof LdapUserInterface) {
-            $user->setDn($ldapUserAttributes['dn']);
+            $user->setDn($ldapEntry['dn']);
         }
 
         return $user;
     }
 
     /**
-     * Create an empty user.
-     *
-     * @return UserInterface
+     * {@inheritDoc}
      */
     abstract protected function createUser();
 }

@@ -66,7 +66,6 @@ class UserWithRolesHydratorTest extends AbstractHydratorTestCase
 
         $user = $hydrator->hydrate($entry);
 
-        $this->assertValidHydrateReturn($user);
         Assert::assertEquals($roles, $user->getRoles());
     }
 
@@ -101,7 +100,6 @@ class UserWithRolesHydratorTest extends AbstractHydratorTestCase
 
         $user = $hydrator->hydrate($entry);
 
-        $this->assertValidHydrateReturn($user);
         Assert::assertEquals($roles, $user->getRoles());
     }
 }
