@@ -1,18 +1,18 @@
 {
-    "name": "fr3d/ldap-bundle",
+    "name": "noxaro/ldap-bundle",
     "type": "symfony-bundle",
     "description": "This package provide users and authentication services based on LDAP directories for Symfony2 framework",
     "keywords": ["ldap", "authentication"],
     "license": "MIT",
-    "homepage": "https://github.com/Maks3w/FR3DLdapBundle",
+    "homepage": "https://github.com/Noxaro/FR3DLdapBundle",
     "authors": [
         {
             "name": "Maks3w"
         }
     ],
     "support": {
-        "issues": "https://github.com/Maks3w/FR3DLdapBundle/issues",
-        "source": "https://github.com/Maks3w/FR3DLdapBundle"
+        "issues": "https://github.com/Noxaro/FR3DLdapBundle/issues",
+        "source": "https://github.com/Noxaro/FR3DLdapBundle"
     },
     "require": {
         "php": ">=5.5",
