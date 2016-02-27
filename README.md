@@ -20,9 +20,9 @@ Features include:
 
 **Versions and compatibilities:**
 
-- [![Build Status](https://secure.travis-ci.org/Maks3w/FR3DLdapBundle.png?branch=develop)](http://travis-ci.org/Maks3w/FR3DLdapBundle)
+- [![Build Status](https://travis-ci.org/Noxaro/FR3DLdapBundle.svg?branch=develop)](https://travis-ci.org/Noxaro/FR3DLdapBundle)
  `develop` contains the future major version. This version may contain new features and backward compatibility breaks.
-- [![Build Status](https://secure.travis-ci.org/Maks3w/FR3DLdapBundle.png?branch=master)](http://travis-ci.org/Maks3w/FR3DLdapBundle)
+- [![Build Status](https://travis-ci.org/Noxaro/FR3DLdapBundle.svg?branch=master)](https://travis-ci.org/Noxaro/FR3DLdapBundle)
  `master` contains the current major version. This version contains fixes and may contain new features.
 
 Documentation
