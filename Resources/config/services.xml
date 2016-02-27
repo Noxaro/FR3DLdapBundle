@@ -16,10 +16,10 @@
             <argument>%fr3d_ldap.ldap_manager.parameters%</argument>
         </service>
 
-        <service id="fr3d_ldap.user_hydrator.default" class="FR3D\LdapBundle\Hydrator\LegacyHydrator" public="false">
+        <!--<service id="fr3d_ldap.user_hydrator.default" class="FR3D\LdapBundle\Hydrator\LegacyHydrator" public="false">
             <argument type="service" id="fos_user.user_manager" />
             <argument>%fr3d_ldap.ldap_manager.parameters%</argument>
-        </service>
+        </service>-->
 
         <service id="fr3d_ldap.user_hydrator_withroles" class="FR3D\LdapBundle\Hydrator\UserWithRolesHydrator" public="false">
             <argument>%fr3d_ldap.hydrator.parameters%</argument>
