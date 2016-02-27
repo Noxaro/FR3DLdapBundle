@@ -101,7 +101,7 @@ class LdapManager implements LdapManagerInterface
         $filter = isset($this->params['group']['filter']) ? $this->params['group']['filter'] : '';
         $entries = $this->driver->search(
             $this->params['group']['baseDn'],
-            sprintf('(&%s(%s=%s))', $filter, $this->params['group']['groupUserAttribute'], $userEntries[$userValueAttribute])
+            sprintf('(&%s(%s=%s))', $filter, $this->params['group']['groupUserAttribute'], $userEntries[$userValueAttribute][0])
         );
 
         return $entries;
