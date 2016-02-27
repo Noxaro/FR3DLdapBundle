@@ -32,7 +32,7 @@
         "symfony/validator": "2.3 - 3"
     },
     "suggest": {
-        "symfony/validator": "Allow pre-validate for existing users before register new ones",
+        "symfony/validator": "Allow pre-validate for existing users before register new ones"
     },
     "autoload": {
         "psr-4": {
